@@ -1,0 +1,116 @@
+{% load staticfiles %}
+
+<div id="GestionarUsuario" class="modal">
+    <div class="modal-content">
+        <div class="card-panel z-depth-2">
+            <h4 class="center blue-text">Gestionar Usuario</h4>
+            <div class="row">
+                <form action="." id="user-form" method="POST" class="col s12 m12 l5 offset-l4" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <br>
+                    <div class="row">
+                        <div class="col s12 m12 l12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">person</i>
+                                <label>Nombre</label>
+                                <input name="nombre" id="nombre" class="form-control" placeholder="Ej: Pepito" type="text">
+                            </div>
+                            <div class="red-text right-align"></div>
+                        </div>
+                        <div class="col s12 m12 l12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">sentiment_satisfied</i>
+                                <label>Apellido</label>
+                                <input name="apellido" id="apellido" class="form-control" placeholder="Ej: Perez" type="text">
+                            </div>
+                            <div class="red-text right-align"></div>
+                        </div>
+                        <div class="col s12 m12 l12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">mail_outline</i>
+                                <label>Correo Electrónico</label>
+                                <input name="correo" id="correo" class="form-control" placeholder="Ej: pepito@perez.com" type="email">
+                            </div>
+                            <div class="red-text right-align"></div>
+                        </div>
+
+                        <div class="col s12 m12 l12">
+                            <div class="input-field">
+                                <i class="material-icons prefix">check</i>
+                                <select id="estado">
+                                    <option value="" disabled selected>Seleccione una opción</option>
+                                    <option value="Activo">Activo</option>
+                                    <option value="Inactivo">Inactivo</option>
+                                </select>
+                                <label>Estado</label>
+                                
+                            </div>
+                            <div class="red-text right-align"></div>
+                        </div>
+                        
+                        <div class="col s12 m12 l12">
+                            <label>Foto</label>
+                            <div class="form-group">
+                                <i class="material-icons prefix">attach_file</i>
+                                <input type="file" name="foto" id="foto">
+                            </div>
+                            <div class="red-text right-align"></div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <button class="btn green darken-2 waves-effect right" type="submit" >Guardar
+                        <i class="material-icons right">save</i>
+                    </button>
+                    <a id="guardar" href="#" class="btn green">
+                        <i class="material-icons right">save</i>
+                        Guardar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block js %}
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+<script type="text/javascript" src="{% static 'js/materialize.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('select').material_select();
+        $('button').click( function(){
+            console.log('button clicked');
+            var nombre = $("#nombre").val();
+            var apellido = $("#apellido").val();
+            var correo = $("#correo").val();
+            var estado = $("#estado option:selected").text();
+            console.log(estado);
+        });    
+
+        $("#user-form").validate({
+            rules: {
+                nombre: {required: true},
+                password: {required: true}
+            },
+            messages: {
+                nombre: {required: 'Este campo es requerido.'},
+                password: {
+                    required: 'Este campo es requerido.',
+                    minlength: 'Introduzca al menos 8 caracteres.'
+                }
+            },
+            errorElement: 'div',
+            errorPlacement: function (error, element) {
+                var placement = $(element).data('error');
+                if (placement) {
+                    $(placement).append(error);
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+    });
+</script>
+
+{% endblock %}

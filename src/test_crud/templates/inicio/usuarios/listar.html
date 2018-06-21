@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+	{% block breadcrumbs %}
+	<li><a class="blue-text" href="{% url 'home' %}">Inicio</a></li>
+	<li class="active">Listar</li>
+	{% endblock %}
+
+	{% block container %}
+	<div class="card-panel z-depth-4">
+		<h4 class="blue-text center">{{nombre_vista}}</h4>
+		<a href="{% url 'agregar_usuario' %}" class="btn green">
+			<i class="material-icons left">add</i>
+			Agregar
+		</a>
+
+        <div class="section">
+			<div class="row">
+				<div class="col s12">
+					<div id="row-grouping" class="section">
+						<table id="data-table-row-grouping" class="display" cellspacing="0" width="100%">
+							<thead>
+								<tr>
+									<th>ID</th>
+									<th>Nombre del Usuario</th>
+									<th></th>
+                                    <th>Correo Electrónico</th>
+                                    <th>Estado</th>
+									<th class="center">Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for obj in personas %}
+									<tr id="command_{{ obj.id }}">
+										<td>{{obj.id}}</td>
+										<td class="black-text"><strong>{{ obj.nombre }} {{ obj.apellido }}</strong></td>
+										<td></td>
+                                        <td class="blue-text text-darken-2">{{obj.correo}}</td>
+                                        {% if obj.estado == 'Activo' %}
+                                        <td style="color: green">
+											<i class="material-icons prefix">beenhere</i>
+											{{obj.get_estado_display}}
+										</td>
+										{% else %}
+                                        <td style="color: red">
+                                            <i class="material-icons prefix">block</i>
+											{{obj.get_estado_display}}
+										</td>
+										{% endif %}										
+										<td class="center">
+											<a href="{% url 'editar_usuario' obj.id  %}" class="orange-text" title="Editar">
+												<i class="material-icons">edit</i>
+											</a>
+											<a href="javascript:void(0);" onclick="Eliminar(this);" id="{{ obj.id }}" name="{{obj.correo}}" class="red-text" title="Eliminar">
+												<i class="material-icons">delete</i>
+											</a>											
+										</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+{% endblock %}
+
+{% block js %}
+<script>
+$(function() {
+	$('.modal').modal();
+});
+function Eliminar($this){
+	var id = $this.id;
+	var valor = $this.name;
+	var url = 'http://localhost:8000/api/personas/'+id;
+	swal({title: "Estás Seguro?",
+		text: "Se eliminará el usuario "+ valor +", No podrás revertir esto!",
+		type: "warning",
+		showCancelButton: true,
+		cancelButtonColor: '#525252',
+		confirmButtonColor: '#d33',
+		confirmButtonText: 'Sí, Eliminar!',
+		cancelButtonText: 'No, Cancelar!'
+	}).then(function (result) {
+		if (result.value) {
+			$.ajax({
+				type: "DELETE",
+				url: url,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+				},
+				success: function(response){
+					swal('Eliminado!', 'El usuario '+ valor +' ha sido eliminado','success');
+					$('#command_' + id).remove();
+				}
+			});
+		}else if (result.dismiss === 'cancel') {
+				swal("Cancelado", "El empleado se conserva.", "error");
+		}
+	});
+}
+</script>
+{% endblock %}

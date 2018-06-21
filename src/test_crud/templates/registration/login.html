@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="msapplication-tap-highlight" content="no">
+		<meta name="keywords" content="materialize">
+		<title>ADMIN</title>
+        
+        <!-- Favicons-->
+		<link rel="icon" href="{% static 'images/favicon/favicon-32x32.png' %}" sizes="32x32">
+        <!-- Favicons-->
+		<link rel="apple-touch-icon-precomposed" href="{% static 'images/favicon/apple-touch-icon-152x152.png' %}">
+		<!-- For iPhone -->
+		<meta name="msapplication-TileColor" content="#00bcd4">
+		<meta name="msapplication-TileImage" content="{% static 'images/favicon/mstile-144x144.png' %}">
+        
+		<link href="{% static 'css/themes/collapsible-menu/materialize.css' %}" type="text/css" rel="stylesheet">
+		<link href="{% static 'css/themes/collapsible-menu/style.css' %}" type="text/css" rel="stylesheet">
+		<link href="{% static 'css/layouts/page-center.css' %}" type="text/css" rel="stylesheet">
+    	<link href="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.css' %}" type="text/css" rel="stylesheet">
+	</head>
+
+	<body class="">
+
+		{% if user.is_authenticated %}
+			<section class="plans-container" id="plans">
+				<article class="col s12 m12 l12">
+					<div class="card hoverable">
+						<div class="card-image gradient-45deg-blue-grey-blue-grey waves-effect">
+							<div class="card-title">
+								<h4>YA ESTAS AUTENTICADO</h4>
+							</div>
+						</div>
+						<div class="card-content">
+							<br>
+							<div class="center">
+								<a href="{% url 'home' %}" class="accent-3 animated infinite rubberBand">
+									<h1 class="blue-grey-text">ADMIN</h1>
+								</a>
+							</div>
+							<ul class="collection">
+								<li class="collection-item"><strong>Ya iniciaste sesión, Dirigete a la Plataforma ADMIN</strong></li>
+							</ul>
+						</div>
+						<div class="card-action center-align">
+							<a href="{% url 'home' %}" class="waves-effect waves-light gradient-45deg-light-blue-cyan gradient-shadow btn">INICIO</a>
+						</div>
+					</div>
+				</article>
+			</section>
+		{% else %}
+		<div id="login-page" class="row">
+			{% block contenido-formulario %}
+			<div class="col s12 card-panel z-depth-4 hoverable">
+
+				<form class="login-form" action="{% url 'login' %}" method="POST" name="login-form" id="user-login-form">
+					{% csrf_token %}
+					{% if next %}
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                	{% else %}
+                    <input type="hidden" name="next" value="{% url 'home' %}"/>
+                	{% endif %}
+
+					<div class="row">
+						<div class="input-field col s12 center">
+							<h1 class="blue-grey-text">ADMIN</h1>
+							{% if form.non_field_errors %}
+								<div id="card-alert" class="card red lighten-5">
+									<div class="card-content red-text">
+										{{ form.non_field_errors }}
+									</div>
+									<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+										<span aria-hidden="true">×</span>
+									</button>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+					<div class="row margin">
+						<div class="input-field col s12">
+							<i class="material-icons prefix pt-5">person_outline</i>
+							<input id="username" name="username" type="text" placeholder="Ej. pepito">
+							<label for="username" class="center-align">Usuario</label>
+						</div>
+					</div>
+					<div class="row margin">
+						<div class="input-field col s12">
+							<i class="material-icons prefix pt-5">lock_outline</i>
+							<input id="password" name="password" type="password" placeholder="Ej. ******">
+							<label for="password">Contraseña</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12 m12 l12 ml-2 mt-3">
+							<input type="checkbox" id="remember-me" />
+							<label for="remember-me">Recuérdame</label>
+						</div>
+					</div>
+					<div class="row">
+						<div class="input-field col s12">
+							<button type="submit" class="btn waves-effect gradient-45deg-deep-orange-orange waves-light col s12">Iniciar sesión</button>
+						</div>
+					</div>
+					<br>					
+				</form>
+			</div>
+			{% endblock %}
+		</div>
+		{% endif %}
+		<script type="text/javascript" src="{% static 'vendors/jquery-3.2.1.min.js' %}"></script>
+	    <script type="text/javascript" src="{% static 'js/materialize.js' %}"></script>
+	    <script type="text/javascript" src="{% static 'vendors/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>		
+		<script type="text/javascript" src="{% static 'js/plugins.js' %}"></script>
+		<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+	    <script>
+    	$(document).ready(function () {
+    		$( "#user-login-form").validate({
+			  	rules: {
+	                username: {required: true},
+	                password: {required: true}
+	            },
+	            messages: {
+	                username: {required: 'Este campo es requerido.'},
+	                password: {
+	                    required: 'Este campo es requerido.',
+	                    minlength: 'Introduzca al menos 8 caracteres.'
+	                }
+	            },
+	            errorElement: 'div',
+	            errorPlacement: function (error, element) {
+	                var placement = $(element).data('error');
+	                if (placement) {
+	                    $(placement).append(error);
+	                } else {
+	                    error.insertAfter(element);
+	                }
+	            }
+			});
+        });    	
+    </script>
+	</body>
+</html>

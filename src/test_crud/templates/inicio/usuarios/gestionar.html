@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+	{% block breadcrumbs %}
+	<li><a class="blue-text" href="{% url 'home' %}">Inicio</a></li>
+    <li><a class="blue-text" href="{% url 'listar_usuarios' %}">Listar</a></li>
+	<li class="active">{{nombre_vista}}</li>
+	{% endblock %}
+
+    {% block container %}
+        <div class="card-panel z-depth-2">
+            <div class="row">
+                <h4 class="center blue-text">{{nombre_vista}}</h4>
+                <br>
+                <div class="row">
+                    <form  id="user-form" action="" method="POST" class="col s12 m12 l5 offset-l4">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col s12 m12 l12">
+                                {{form.non_field_errors}}
+                                <div class="input-field">
+                                    <i class="material-icons prefix">person</i>
+                                    <label>Nombre</label>
+                                    {{ form.nombre }}
+                                </div>
+                                <div class="red-text right-align">
+                                    {{ form.nombre.errors }}
+                                </div>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                {{form.non_field_errors}}
+                                <div class="input-field">
+                                    <i class="material-icons prefix">sentiment_satisfied</i>
+                                    <label>Apellido</label>
+                                    {{ form.apellido }}
+                                </div>
+                                <div class="red-text right-align">
+                                    {{ form.apellido.errors }}
+                                </div>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                {{form.non_field_errors}}
+                                <div class="input-field">
+                                    <i class="material-icons prefix">mail_outline</i>
+                                    <label>Correo</label>
+                                    {{ form.correo }}
+                                </div>
+                                <div class="red-text right-align">
+                                    {{ form.correo.errors }}
+                                </div>
+                                <br>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                {{form.non_field_errors}}
+                                <div class="input-field">
+                                    <i class="material-icons prefix">check</i>
+                                    {{ form.estado }}
+                                    <label>Estado</label>                                    
+                                </div>
+                                <div class="red-text right-align">
+                                    {{ form.estado.errors }}
+                                </div>
+                            </div>
+
+                            <div class="col s12 m12 l12">
+                                <label>Foto</label>
+                                <div class="form-group">
+                                    <i class="material-icons prefix">attach_file</i>
+                                    {{ form.foto }}
+                                </div>
+                                <div class="red-text right-align">
+                                    {{ form.foto.errors }}
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <a href="{% url 'listar_usuarios' %}" class="btn grey darken-2 waves-effect right">
+                                    <i class="material-icons left">keyboard_arrow_left</i>
+                                    Atras
+                                </a>
+                            </div>
+                            <div class="input-field col s6">
+                                <button class="btn green darken-2 waves-effect left" type="submit" name="action">Guardar
+                                    <i class="material-icons right">save</i>
+                                </button>
+                            </div>                            
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+	{% endblock %}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('select').material_select();
+        $('button').click( function(){
+            var nombre = $("#id_nombre").val();
+            var apellido = $("#id_apellido").val();
+            var correo = $("#id_correo").val();
+            var estado = $("#id_estado option:selected").text();
+            var foto = $("#id_foto").get(0).files[0];
+            formdata = new FormData();
+            if (formdata && nombre != '' && apellido != '' && correo != '' && estado != '') {
+                formdata.append("nombre", nombre);
+                formdata.append("apellido", apellido);
+                formdata.append("correo", correo);
+                formdata.append("estado", estado);
+                formdata.append("foto", foto);
+                console.log(formdata);
+
+                $.ajax({
+                    url: "http://localhost:8000/api/personas/",
+                    type: "POST",
+                    data: formdata,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function(response){
+                        if(response != 0){
+                            $("#img").attr("src",response);
+                        }else{
+                            alert('file not uploaded');
+                        }
+                    },
+                });
+            }
+            if( nombre != '' && apellido != '' ){
+                console.log("PASA");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

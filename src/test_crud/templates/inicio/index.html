@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+	{% block breadcrumbs-title %}Principal{% endblock %}
+	{% block breadcrumbs %}{% endblock %}
+	{% block container %}
+	<div class="row">
+		<div class="col s12">
+			{% for obj in personas %}
+				{% if obj.foto %}
+				<div class="col s12 m6 l3">
+					<div class="card z-depth-4 hoverable">
+						<div class="card-image waves-effect waves-block waves-light">
+							<a href=".">
+								<img class="activator" src="/media/{{obj.foto}}" alt="img" height="150">
+								<p class="center teal-text"><strong>{{obj.nombre}} {{obj.apellido}}</strong></p>
+							</a>							
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<div class="col s12 m6 l3">
+					<div class="card hoverable">
+						<div class="card-image waves-effect waves-block waves-light">
+							<a href="">
+							<img class="activator" src="http://via.placeholder.com/210x110/215a9a/FFF?text={{obj.correo}}" alt="img">
+							</a>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	{% endblock %}

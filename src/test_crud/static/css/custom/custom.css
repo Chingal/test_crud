@@ -1,0 +1,14 @@
+.titulo-pagina {
+    margin: -3px;
+}
+
+.titulo-text {
+    color: #C38C23 !important;
+}
+
+@media only screen and (max-width: 992px) {
+    #logo {
+        position: relative;
+        top: -4px;
+    }
+}

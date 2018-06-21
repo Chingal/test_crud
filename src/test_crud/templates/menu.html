@@ -1,0 +1,42 @@
+{% load staticfiles %}
+
+<aside id="left-sidebar-nav" class="nav-expanded nav-lock nav-collapsible">
+    <div class="brand-sidebar">
+        <h1 class="logo-wrapper gradient-45deg-blue-grey-blue-grey">
+            <a href="." class="brand-logo darken-1">
+            <img src="{% static 'images/logo/apple-touch-icon-152x152.png' %}" alt="materialize logo">
+            <span class="logo-text hide-on-med-and-down">Admin</span>
+            </a>
+            <a href="#" class="navbar-toggler">
+            <i class="material-icons">radio_button_checked</i>
+        </a>
+        </h1>
+    </div>
+
+    <ul id="slide-out" class="#f5f5f5 grey lighten-4 side-nav fixed leftside-navigation">
+        {% if user.is_authenticated %}
+        <figure class="card-profile-image">
+            <img class="circle z-depth-2 responsive-img activator #fafafa grey lighten-5 gradient-shadow" src="/media/{{obj.foto}}" alt="profile image" height="150">
+            <div class="black-text center">{{obj.nombre}} {{obj.apellido}}</div>
+        </figure>
+
+        <li class="no-padding">
+            <ul class="collapsible" data-collapsible="accordion">
+                {% block menu %}
+                    {% for opc in menu_principal %}
+                    <li class="bold {% if opc.active %}active{% endif %}">
+                        <a href="{{opc.url}}" class="collapsible-header waves-effect waves-cyan {% if opc.active %}active{% endif %}">
+                            <i class="material-icons">{{opc.icon}}</i>
+                            <span class="nav-text">{{opc.name}}</span>
+                        </a>                        
+                    </li>
+                    {% endfor %}
+                {% endblock %}
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+    <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only gradient-45deg-light-blue-cyan gradient-shadow pulse">
+    <i class="material-icons">menu</i>
+    </a>
+</aside>
